@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">MyMediaPlayer</string>
     <string name="back">返回</string>
+    <string name="hide_dialog">隐藏</string>
+    <string name="play_dialog">播放</string>
+    <string name="stop_dialog">停止</string>
+    <string name="to_play">点击播放</string>
+    <string name="to_pause">点击停止</string>
 </resources>

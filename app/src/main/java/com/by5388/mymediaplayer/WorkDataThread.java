@@ -25,8 +25,13 @@ public class WorkDataThread extends HandlerThread implements IMainApi {
     private Handler mWorkHandler;
     private final File rootFile;
 
+    /**
+     * 当前所显示的文件夹
+     */
+    private File mCurrentDirectory;
 
-    public WorkDataThread(Handler uiHandler, WorkCallback workCallback) {
+
+    WorkDataThread(Handler uiHandler, WorkCallback workCallback) {
         super(TAG);
         mUiHandler = uiHandler;
         mWorkCallback = workCallback;
@@ -37,8 +42,8 @@ public class WorkDataThread extends HandlerThread implements IMainApi {
 
     @Override
     protected void onLooperPrepared() {
+        //在子线程中实例的，可以执行耗时操作
         mWorkHandler = new WorkHandler(this);
-
     }
 
 
@@ -60,7 +65,6 @@ public class WorkDataThread extends HandlerThread implements IMainApi {
                 case GET_FILE:
                     File file = (File) msg.obj;
                     getSubFileList(file);
-
                     break;
 
                 default:
@@ -70,20 +74,27 @@ public class WorkDataThread extends HandlerThread implements IMainApi {
         }
 
         private void getSubFileList(File file) {
-
+            final WorkDataThread workDataThread = mWeakReference.get();
+            if (workDataThread == null) {
+                return;
+            }
             if (file == null || file.isFile()) {
                 return;
             }
             File[] files = file.listFiles();
             if (files == null || files.length == 0) {
+                workDataThread.mUiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        workDataThread.mWorkCallback.toast("这是一个空文件夹!");
+                    }
+                });
                 return;
             }
             final List<File> list = new ArrayList<>();
             Collections.addAll(list, files);
-            final WorkDataThread workDataThread = mWeakReference.get();
-            if (workDataThread == null) {
-                return;
-            }
+            Collections.sort(list);
+
             workDataThread.mUiHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -101,6 +112,24 @@ public class WorkDataThread extends HandlerThread implements IMainApi {
 
     @Override
     public void getFileList(File file) {
+        if (file == null) {
+            return;
+        }
         mWorkHandler.obtainMessage(GET_FILE, file).sendToTarget();
+        // TODO: 2019/5/21 退出去时，如何保持有序性
+        mCurrentDirectory = file;
+    }
+
+    @Override
+    public void goBack() {
+        // TODO: 2019/5/21
+        final File file = mCurrentDirectory;
+        if (file != null) {
+            File parentFile = file.getParentFile();
+            if (parentFile != null && parentFile.exists()) {
+                getFileList(parentFile);
+            }
+        }
+
     }
 }

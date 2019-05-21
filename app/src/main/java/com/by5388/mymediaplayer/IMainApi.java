@@ -9,4 +9,9 @@ public interface IMainApi {
     void getRootFile();
 
     void getFileList(File file);
+
+    /**
+     * 返回上一级
+     */
+    void goBack();
 }

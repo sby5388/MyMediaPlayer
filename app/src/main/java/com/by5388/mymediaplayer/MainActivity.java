@@ -1,5 +1,7 @@
 package com.by5388.mymediaplayer;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -27,9 +29,14 @@ public class MainActivity extends AppCompatActivity implements WorkCallback, Ada
         setContentView(R.layout.activity_main);
         initData();
         initView();
-        loadData();
-
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loadData();
+    }
+
 
     private void loadData() {
         mApi.getRootFile();
@@ -42,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements WorkCallback, Ada
         findViewById(R.id.buttonBack).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                mApi.goBack();
             }
         });
     }
@@ -66,7 +73,45 @@ public class MainActivity extends AppCompatActivity implements WorkCallback, Ada
         if (file.isDirectory()) {
             mApi.getFileList(file);
         } else {
+            // TODO: 2019/5/21 各种文件执行相应的操作
             Toast.makeText(this, file.getName(), Toast.LENGTH_SHORT).show();
+            openFileByIntent(file);
         }
+    }
+
+    /**
+     * 通过Intent 来打开文件
+     */
+    private void openFileByIntent(File file) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.fromFile(file));
+        Intent chooser = Intent.createChooser(intent, "打开文件:" + file.getName());
+        startActivity(chooser);
+    }
+
+    @Override
+    public void startLoading() {
+        // TODO: 2019/5/21
+        Toast.makeText(this, "开始查询", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void finishLoading() {
+
+    }
+
+    @Override
+    public void cancelLoading() {
+
+    }
+
+    @Override
+    public void toast(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void toast(int textId) {
+        Toast.makeText(this, textId, Toast.LENGTH_SHORT).show();
     }
 }

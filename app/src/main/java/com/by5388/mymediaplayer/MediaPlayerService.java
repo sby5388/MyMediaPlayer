@@ -13,7 +13,7 @@ import java.io.File;
 /**
  * @author by5388  on 2019/5/20.
  */
-public class MediaPlayerService extends IntentService {
+public final class MediaPlayerService extends IntentService {
     private static final String TAG = "MediaPlayerService";
     private static final String ACTION_PLAY = "play";
     private MediaPlayer mMediaPlayer;
@@ -25,6 +25,10 @@ public class MediaPlayerService extends IntentService {
         intent.setData(Uri.fromFile(file));
         return intent;
     }
+
+
+
+
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
@@ -58,4 +62,5 @@ public class MediaPlayerService extends IntentService {
 
     private void resetMediaPlayer() {
     }
+
 }
