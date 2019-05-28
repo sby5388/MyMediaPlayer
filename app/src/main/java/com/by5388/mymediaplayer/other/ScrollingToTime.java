@@ -7,7 +7,7 @@ interface ScrollingToTime {
     /**
      * 滚动到某处
      *
-     * @param time 时间
+     * @param time 时间，单位毫秒
      */
     void scrollToTime(int time);
 }

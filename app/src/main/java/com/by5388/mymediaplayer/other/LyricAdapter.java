@@ -7,13 +7,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.by5388.mymediaplayer.R;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 
 /**
@@ -26,6 +25,7 @@ public class LyricAdapter extends BaseLyricAdapter {
     private final LayoutInflater mInflater;
     private Lyric mLyric;
     private final ScrollingToLine mScrollingToLine;
+    private int currentIndex = 0;
 
     private Handler mHandler;
 
@@ -40,6 +40,18 @@ public class LyricAdapter extends BaseLyricAdapter {
 
     @Override
     public void scrollToTime(int time) {
+        int currentIndex = this.currentIndex;
+        final List<LyricText> lyricTexts = mLyric.mLyricTexts;
+        for (int i = currentIndex; i < lyricTexts.size(); i++) {
+            // TODO: 2019/5/28
+            if (lyricTexts.get(i).getShowTime() >= time) {
+                final Message message = mHandler.obtainMessage(SCROLL_LYRIC);
+                message.arg1 = lyricTexts.get(i).getLineIndex();
+                message.sendToTarget();
+                this.currentIndex = i;
+                break;
+            }
+        }
 
     }
 
@@ -91,7 +103,7 @@ public class LyricAdapter extends BaseLyricAdapter {
     private static class LyricHandler extends Handler {
         private WeakReference<LyricAdapter> mReference;
 
-        public LyricHandler(LyricAdapter adapter) {
+        LyricHandler(LyricAdapter adapter) {
             mReference = new WeakReference<>(adapter);
         }
 
@@ -114,18 +126,4 @@ public class LyricAdapter extends BaseLyricAdapter {
         }
     }
 
-    private void temp(ListView listView) {
-
-    }
-
-    private void temp(View view) {
-
-    }
-
-    private void temp2(Button button, ListView listView) {
-        temp(button);
-        //这种情况需要强制向上转型
-        temp((View) listView);
-
-    }
 }

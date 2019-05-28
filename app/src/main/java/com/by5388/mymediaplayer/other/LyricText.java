@@ -6,10 +6,12 @@ package com.by5388.mymediaplayer.other;
 final class LyricText {
     private final int showTime;
     private final String text;
+    private final int lineIndex;
 
-    LyricText(int showTime, String text) {
+    LyricText(int lineIndex, int showTime, String text) {
         this.showTime = showTime;
         this.text = text;
+        this.lineIndex = lineIndex;
     }
 
     public int getShowTime() {
@@ -18,5 +20,17 @@ final class LyricText {
 
     public String getText() {
         return text;
+    }
+
+    @Override
+    public String toString() {
+        return "LyricText{" +
+                "showTime=" + showTime +
+                ", text='" + text + '\'' +
+                '}';
+    }
+
+    public int getLineIndex() {
+        return lineIndex;
     }
 }
