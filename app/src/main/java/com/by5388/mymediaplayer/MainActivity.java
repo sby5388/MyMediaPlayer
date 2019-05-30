@@ -10,6 +10,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.by5388.mymediaplayer.play.PlayActivity;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +77,8 @@ public class MainActivity extends AppCompatActivity implements WorkCallback, Ada
         } else {
             // TODO: 2019/5/21 各种文件执行相应的操作
             Toast.makeText(this, file.getName(), Toast.LENGTH_SHORT).show();
-            openFileByIntent(file);
+//            openFileByIntent(file);
+            toPlayUI(file);
         }
     }
 
@@ -87,6 +90,15 @@ public class MainActivity extends AppCompatActivity implements WorkCallback, Ada
         intent.setData(Uri.fromFile(file));
         Intent chooser = Intent.createChooser(intent, "打开文件:" + file.getName());
         startActivity(chooser);
+    }
+
+    private void toPlayUI(File file){
+        try {
+            final Intent intent = PlayActivity.newIntent(this, file);
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

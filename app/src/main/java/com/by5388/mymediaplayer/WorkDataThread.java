@@ -6,6 +6,7 @@ import android.os.HandlerThread;
 import android.os.Message;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,7 +74,7 @@ public class WorkDataThread extends HandlerThread implements IMainApi {
             removeMessages(msg.what);
         }
 
-        private void getSubFileList(File file) {
+        private void getSubFileList(final File file) {
             final WorkDataThread workDataThread = mWeakReference.get();
             if (workDataThread == null) {
                 return;
@@ -81,7 +82,22 @@ public class WorkDataThread extends HandlerThread implements IMainApi {
             if (file == null || file.isFile()) {
                 return;
             }
-            File[] files = file.listFiles();
+            File[] files = file.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File pathname) {
+                    if (file.isDirectory()) {
+                        return true;
+                    }
+                    final String name = file.getName().toLowerCase();
+                    if (name.startsWith(".")) {
+                        return false;
+                    }
+                    if (name.endsWith(".mp3") || name.endsWith(".m4a") || name.endsWith(".wma")) {
+                        return true;
+                    }
+                    return false;
+                }
+            });
             if (files == null || files.length == 0) {
                 workDataThread.mUiHandler.post(new Runnable() {
                     @Override
@@ -115,6 +131,7 @@ public class WorkDataThread extends HandlerThread implements IMainApi {
         if (file == null) {
             return;
         }
+        // TODO: 2019/5/30 这个出现了mWorkHandler 还没有被初始化的控指针闪退
         mWorkHandler.obtainMessage(GET_FILE, file).sendToTarget();
         // TODO: 2019/5/21 退出去时，如何保持有序性
         mCurrentDirectory = file;

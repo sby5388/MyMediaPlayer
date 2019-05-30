@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author Administrator  on 2019/5/24.
  */
-public class Lyric implements Serializable {
+public final class Lyric implements Serializable {
     private static final String TAG = "Lyric";
     // TODO: 2019/5/27 check fileName's suffix
     private static final String LYRIC_SUFFIX = ".lrc";
@@ -30,7 +30,7 @@ public class Lyric implements Serializable {
 
     List<LyricText> mLyricTexts;
 
-    Lyric(File file) {
+    public Lyric(File file) {
         initWithNothing();
         if (file == null || file.isDirectory() || !file.exists() || !file.getName().toLowerCase().endsWith(LYRIC_SUFFIX)) {
             System.err.println(new IllegalArgumentException("Lyric(File file)"));
@@ -39,7 +39,7 @@ public class Lyric implements Serializable {
         }
     }
 
-    Lyric() {
+    public Lyric() {
         initWithNothing();
     }
 

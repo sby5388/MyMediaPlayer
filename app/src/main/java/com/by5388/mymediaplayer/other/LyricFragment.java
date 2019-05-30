@@ -17,7 +17,7 @@ import com.by5388.mymediaplayer.R;
 /**
  * @author Administrator  on 2019/5/24.
  */
-public final class TestFragment extends Fragment
+public final class LyricFragment extends Fragment
         implements ScrollingToLine, LyricBroadReceiver.UpdateCallback {
     private ListView mListView;
     private BaseLyricAdapter mAdapter;
@@ -25,13 +25,17 @@ public final class TestFragment extends Fragment
     private BroadcastReceiver mReceiver;
     private IntentFilter mIntentFilter = LyricBroadReceiver.getIntentFilter();
 
-    public static TestFragment newInstance(Lyric lyric) {
-        TestFragment fragment = new TestFragment();
+    public static LyricFragment newInstance(Lyric lyric) {
+        LyricFragment fragment = new LyricFragment();
         Bundle args = new Bundle();
         // TODO: 2019/5/24
         args.putSerializable(BUNDLE_LYRIC, lyric);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static LyricFragment newInstance() {
+        return new LyricFragment();
     }
 
 
@@ -67,7 +71,7 @@ public final class TestFragment extends Fragment
         if (null == lyric) {
             lyric = new Lyric();
         }
-        mAdapter = new LyricAdapter(getContext(), lyric, this);
+        mAdapter = new LyricAdapter(lyric, this);
     }
 
     @Override
